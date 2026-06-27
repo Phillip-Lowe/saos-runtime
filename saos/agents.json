@@ -2,73 +2,73 @@
   "SOL": {
     "role": "executor",
     "description": "Strategic oversight, high-leverage decisions",
-    "model": "ollama/kimi-k2.6:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "🛰️"
   },
   "ORACLE": {
     "role": "planner",
     "description": "Architecture review, system design assessment",
-    "model": "external",
+    "model": "qwen2.5-coder:14b",
     "avatar": "🔮"
   },
   "ASSEMBLY": {
     "role": "architect",
     "description": "Architecture, system design",
-    "model": "ollama/deepseek-v4-pro:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "🛠"
   },
   "DOOBY": {
     "role": "coder",
     "description": "Coding, scripting, building",
-    "model": "ollama/qwen2.5-coder:7b",
+    "model": "dooby-fast:latest",
     "avatar": "🤖"
   },
   "LOKI": {
     "role": "operator",
     "description": "Background ops, crons, file tasks",
-    "model": "ollama/qwen3.5:9b",
+    "model": "dooby-fast:latest",
     "avatar": "🏠"
   },
   "CODY": {
     "role": "reviewer",
     "description": "Code review, validation",
-    "model": "ollama/kimi-k2.6:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "💻"
   },
   "GENI": {
     "role": "creative",
     "description": "Creative, frontend, assets",
-    "model": "ollama/deepseek-v4-pro:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "🎨"
   },
   "VALI": {
     "role": "validator",
     "description": "Testing, QA",
-    "model": "ollama/kimi-k2.6:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "✅"
   },
   "PESSI": {
     "role": "risk",
     "description": "Monitoring, alerts",
-    "model": "ollama/deepseek-v4-pro:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "⚠️"
   },
   "CHATTY": {
     "role": "messenger",
     "description": "Messaging, notifications",
-    "model": "ollama/kimi-k2.6:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "💬"
   },
   "ATLAS": {
     "role": "researcher",
     "description": "Research, discovery",
-    "model": "ollama/kimi-k2.6:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "🗺️"
   },
   "JURIS": {
     "role": "compliance",
     "description": "Legal/compliance",
-    "model": "ollama/kimi-k2.6:cloud",
+    "model": "qwen2.5-coder:14b",
     "avatar": "⚖️"
   }
 }
