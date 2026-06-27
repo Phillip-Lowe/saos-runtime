@@ -8,13 +8,13 @@ from saos.memory import get_metrics, get_recent_logs
 class SAOSController:
     """Primary controller for SAOS runtime operations."""
     
-    def __init__(self, legacy_executor: Optional[Callable] = None):
-        self.legacy_executor = legacy_executor or self._default_executor
+    def __init__(self, core_executor: Optional[Callable] = None):
+        self.core_executor = core_executor or self._default_executor
         self.pre_hooks = []
         self.post_hooks = []
     
     def _default_executor(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Default executor when no legacy bridge is provided."""
+        """Default executor when no core bridge is provided."""
         return {
             "status": "executed",
             "mode": "default",
@@ -34,7 +34,7 @@ class SAOSController:
         task = route_task(input_data)
         return execute_pipeline(
             task, 
-            self.legacy_executor,
+            self.core_executor,
             pre_hooks=self.pre_hooks,
             post_hooks=self.post_hooks
         )
@@ -56,10 +56,10 @@ class SAOSController:
 _controller = None
 
 
-def initialize(legacy_executor: Optional[Callable] = None) -> SAOSController:
+def initialize(core_executor: Optional[Callable] = None) -> SAOSController:
     """Initialize the SAOS controller."""
     global _controller
-    _controller = SAOSController(legacy_executor)
+    _controller = SAOSController(core_executor)
     return _controller
 
 

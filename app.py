@@ -2,13 +2,13 @@
 """SAOS Runtime v1 — Main Entry Point
 
 Replaces OpenClaw entry with SAOS-controlled execution.
-SAOS handles all inputs; OpenClaw isolated behind legacy bridge.
+SAOS handles all inputs; OpenClaw isolated behind core bridge.
 """
 
 import sys
 import json
 from saos.controller import initialize, handle_request
-from saos.legacy_bridge import run_legacy
+from saos.legacy_bridge import run_core
 from saos.memory import get_metrics, log_event
 
 
@@ -16,12 +16,12 @@ def main():
     """Main entry point for SAOS Runtime."""
     print("=" * 60)
     print("  SAOS Runtime v1 — System Operations Layer")
-    print("  Base: OpenClaw (isolated behind legacy bridge)")
+    print("  Base: OpenClaw (isolated behind core bridge)")
     print("=" * 60)
     print()
     
-    # Initialize SAOS controller with legacy bridge
-    controller = initialize(legacy_executor=run_legacy)
+    # Initialize SAOS controller with core bridge
+    controller = initialize(core_executor=run_core)
     
     log_event({"event": "system_startup", "version": "1.0.0"})
     
