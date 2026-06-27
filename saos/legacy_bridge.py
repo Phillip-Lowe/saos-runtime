@@ -2,7 +2,6 @@
 import json
 import os
 import subprocess
-import tempfile
 from typing import Dict, Any
 from datetime import datetime
 
@@ -67,6 +66,7 @@ def run_core(task: Dict[str, Any]) -> Dict[str, Any]:
     """Execute a task through the core OpenClaw bridge.
     
     Uses subprocess to invoke OpenClaw CLI with the task payload.
+    Correct invocation: node openclaw.mjs agent --agent <id> --message "<prompt>" --json
     """
     agent = task.get("agent", "SOL")
     task_type = task.get("type", "general")
@@ -98,23 +98,15 @@ def run_core(task: Dict[str, Any]) -> Dict[str, Any]:
     # Build prompt for OpenClaw
     prompt = _build_openclaw_prompt(task)
     
-    # Prepare CLI invocation
-    # OpenClaw CLI supports: openclaw --agent <agent> --prompt "<prompt>"
-    # Or: echo "prompt" | openclaw --agent <agent>
-    
+    # Correct CLI invocation:
+    # node openclaw.mjs agent --agent <id> --message "<prompt>" --json
     try:
-        # Write prompt to temp file for reliability
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
-            f.write(prompt)
-            prompt_file = f.name
-        
-        # Build command — use node to run the .mjs file
         cmd = [
             "node", OPENCLAW_CLI,
+            "agent",
             "--agent", agent.lower(),
-            "--prompt-file", prompt_file,
-            "--non-interactive",
-            "--no-stream"
+            "--message", prompt,
+            "--json"
         ]
         
         # Execute OpenClaw with timeout
@@ -123,22 +115,25 @@ def run_core(task: Dict[str, Any]) -> Dict[str, Any]:
             capture_output=True,
             text=True,
             timeout=300,  # 5 minute timeout
-            cwd=CORE_PATH
+            cwd=REPO_ROOT
         )
-        
-        # Clean up temp file
-        os.unlink(prompt_file)
         
         execution_context["returncode"] = result.returncode
         execution_context["stdout_length"] = len(result.stdout)
         execution_context["stderr_length"] = len(result.stderr)
         
         if result.returncode == 0:
+            # Try to parse JSON output
+            try:
+                output = json.loads(result.stdout)
+            except json.JSONDecodeError:
+                output = result.stdout[:5000]
+            
             return {
                 "status": "executed",
                 "mode": "core_bridge_subprocess",
                 "context": execution_context,
-                "result": result.stdout[:5000],  # Truncate large outputs
+                "result": output,
                 "task_id": task_id,
                 "executed_at": datetime.utcnow().isoformat()
             }
