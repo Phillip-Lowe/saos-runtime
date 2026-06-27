@@ -1,83 +1,73 @@
-# Session Save — 2026-06-27 ~12:22 CDT
-**User directive:** "Save everything before compaction"
+# Session Save — 2026-06-27 ~07:52 CDT
+**User directive:** "Update everything from this session and I will bring it back in a new session"
 
 ---
 
 ## What Was Accomplished
 
-### 1. SAOS Runtime v1 — Core Bridge INTEGRATED ✅
-- **File:** `saos/legacy_bridge.py` — Fixed to use correct OpenCLaw CLI invocation
-- **Command:** `node openclaw.mjs agent --agent <id> --message "..." --json`
-- **Status:** WORKING — SOL responds through bridge, ~11-14s inference time
-- **Location:** `/Volumes/External/saos-runtime/` (external HDD)
+### 1. SAOS Runtime v1 — Custom Agent Runner BUILT ✅
+- **File:** `saos/agent_runner.py` — Direct Ollama API calls
+- **Result:** 99.9% context reduction (131K → ~100 tokens)
+- **Performance:** DOOBY 0.4s, LOKI 1.6s
+- **Location:** `/Volumes/External/saos-runtime/`
 
-### 2. Tool Restrictions for SOL
-- **Config:** `~/.openclaw/openclaw.json`
-- **SOL tools:** `minimal` profile + `memory_search`, `memory_get`, `read`, `exec`
-- **Result:** SOL gets ~5 tools instead of 30+
+### 2. OpenClaw Config Reverted ✅
+- **File:** `~/.openclaw/openclaw.json`
+- **Restored:** bootstrapMaxChars: 20000, bootstrapTotalMaxChars: 150000
+- **Removed:** SOL tool restrictions
+- **Kept:** Loki + Dooby tool configs (minimal profile)
 
-### 3. Bootstrap Limits Lowered
-- **Config:** `~/.openclaw/openclaw.json`
-  - `bootstrapMaxChars`: 5000 (was 20000)
-  - `bootstrapTotalMaxChars`: 10000 (was 150000)
-- **Source:** `core/src/agents/embedded-agent-helpers/bootstrap.ts`
-  - `DEFAULT_BOOTSTRAP_MAX_CHARS = 5_000` (was 20_000)
-  - `DEFAULT_BOOTSTRAP_TOTAL_MAX_CHARS = 10_000` (was 60_000)
-- **NOT YET APPLIED** — compiled dist hasn't been rebuilt
+### 3. OpenClaw Build In Progress ⏳
+- **Location:** `/Volumes/External/saos-runtime/`
+- **Status:** Build running (PID 90365)
+- **Started:** ~7:48 AM CDT
+- **Blocker:** HDD slow, large dependency tree
+- **Goal:** Apply bootstrap limit changes to compiled dist
 
-### 4. Loki + Dooby Bootstrap Config (NEEDS REBUILD)
-- **Problem:** Local models fail due to 131K token context injection
-- **Solution:** Need to add `tools` config + lower bootstrap limits to agent configs
-- **Blocker:** OpenClaw dist needs rebuild to pick up source changes
-
-### 5. Build Attempt
-- **Tried:** `node core/scripts/build-all.mjs`
-- **Status:** Stuck/Hung — no CPU activity, no output
-- **Alternative:** Try specific profile builds
-
-### 6. GitHub Repo Updated
-- **URL:** https://github.com/Phillip-Lowe/saos-runtime
-- **Commits:** Working bridge, lowered limits, tool restrictions
+### 4. External Drive Repo Restructured
+- **Change:** `core/` contents moved to root level
+- **node_modules:** Copied from Homebrew install (~633MB)
+- **GitHub:** https://github.com/Phillip-Lowe/saos-runtime
 
 ---
 
-## ORACLE Lean Agent Architecture Document
-- **Saved:** `docs/oracle-lean-agent-architecture.md`
-- **Status:** Design complete, implementation gap analysis done
-- **Key insight:** SAOS needs custom agent runner OR rebuilt OpenClaw
+## Pending on Return
+
+1. ⏳ **Check build status** — `dist/entry.js` timestamp will show if rebuilt
+2. ⏳ **Test rebuilt OpenClaw** — verify bootstrap limits applied
+3. ⏳ **Test Loki/Dooby** — local models with reduced context
+4. ⏳ **GitHub push** — commit any new changes after build
 
 ---
 
-## Pending Items
+## Key Files
 
-1. ⏳ **Rebuild OpenClaw** to apply bootstrap limit changes
-2. ⏳ **Add Loki + Dooby tool configs** to `openclaw.json`
-3. ⏳ **Test Loki/Dooby** with reduced context
-4. ⏳ **Build custom agent runner** (last resort)
-
----
-
-## Key Files Modified
-
-| File | Change |
-|------|--------|
-| `saos/legacy_bridge.py` | Fixed CLI invocation |
-| `~/.openclaw/openclaw.json` | SOL tools + bootstrap limits |
-| `core/src/agents/embedded-agent-helpers/bootstrap.ts` | Default limits lowered |
-| `docs/oracle-lean-agent-architecture.md` | ORACLE design saved |
+| File | Location | Status |
+|------|----------|--------|
+| `saos/agent_runner.py` | External drive | ✅ Working |
+| `saos/controller.py` | External drive | ✅ Runner + Bridge modes |
+| `saos/agents.json` | External drive | ✅ Local models |
+| `~/.openclaw/openclaw.json` | Local Mac | ✅ Reverted + Loki/Dooby configs |
+| `core/src/agents/embedded-agent-helpers/bootstrap.ts` | External drive | ✅ Limits lowered |
 
 ---
 
-## Disk Status
+## What NOT to Touch
 
-| Location | Size | Status |
-|----------|------|--------|
-| `/Volumes/External/saos-runtime` | ~250MB | Working repo |
-| `~/.openclaw/` | 6.4GB | Live config (don't touch) |
-| `/tmp/` | Cleaned | Staging removed |
+- `~/.openclaw/` — user's live OpenClaw (already reverted)
+- `/opt/homebrew/lib/node_modules/openclaw/` — Homebrew install
+- Anything outside `/Volumes/External/saos-runtime/`
 
 ---
 
-## Next Session Priority
+## Return Instructions
 
-**REBUILD OPENCLAW** or **build custom agent runner** for Loki/Dooby to work with local models.
+When returning:
+1. Check if build completed: `stat dist/entry.js` (look for recent timestamp)
+2. If build failed: check logs, may need to restart
+3. If build succeeded: test with `node openclaw.mjs agent --agent loki --message "test" --json`
+4. Commit and push to GitHub
+
+---
+
+*Session saved: 2026-06-27 07:52 CDT*
